@@ -10,7 +10,7 @@ private:
 	CK_FUNCTION_LIST_PTR FuncList = NULL_PTR;
 	CK_SLOT_ID_PTR SlotList = NULL_PTR;
 	CK_SLOT_INFO SlotInfo;
-	CK_ULONG ListCount = NULL_PTR;
+	CK_ULONG ListCount;
 	void LoadProc(HINSTANCE, const char*);
 public:
 	CryptoToken(const wchar_t*);
@@ -49,7 +49,7 @@ int CryptoToken::m_C_GetSlotList(CK_BBOOL token_present) {
 
 int CryptoToken::m_C_GetSlotInfo(unsigned int slot = 1) {
 	CK_C_GetSlotInfo pC_GetSlotInfo = FuncList->C_GetSlotInfo;
-	return pC_GetSlotInfo(*SlotList, &SlotInfo);
+	return pC_GetSlotInfo(SlotList[0], &SlotInfo);
 }
 
 int main() {
@@ -57,7 +57,6 @@ int main() {
 	a.m_C_GetFunctionList();
 	a.m_C_Initialize();
 	a.m_C_GetSlotList(CK_FALSE);
-	if (a.m_C_GetSlotInfo() == CKR_OK) {
-		std::cout << "1";
-	}
+	CK_RV rv = a.m_C_GetSlotInfo();
+	if (rv == CKR_OK) std::cout << "1";
 }
