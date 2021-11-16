@@ -9,7 +9,7 @@ private:
 	void* LoadFunc = nullptr;
 	CK_FUNCTION_LIST_PTR FuncList = nullptr;
 	CK_SLOT_ID_PTR SlotList = nullptr;
-	CK_ULONG_PTR ListCount = nullptr;
+	CK_ULONG ListCount;
 	void LoadProc(HINSTANCE, const char*);
 public:
 	CryptoToken(const wchar_t*);
@@ -17,6 +17,7 @@ public:
 	int m_C_Initialize();
 	int m_C_GetSlotList(CK_BBOOL);
 	//~CryptoToken();
+	
 };
 
 CryptoToken::CryptoToken(const wchar_t* PATH_TO_DLL) {
@@ -42,9 +43,13 @@ int CryptoToken::m_C_Initialize() {
 
 int CryptoToken::m_C_GetSlotList(CK_BBOOL token_present) {
 	CK_C_GetSlotList pC_GetSlotList = FuncList->C_GetSlotList;
-	return pC_GetSlotList(token_present, SlotList, ListCount);
+	return pC_GetSlotList(token_present, NULL_PTR, &ListCount);
 }
 
 int main() {
 	CryptoToken a(L"C:\\SoftHSM2\\lib\\softhsm2-x64.dll");
+	a.m_C_GetFunctionList();
+	a.m_C_Initialize();
+	CK_RV rv = a.m_C_GetSlotList(CK_FALSE);
+	if (rv == CKR_OK) std::cout << "1";
 }
