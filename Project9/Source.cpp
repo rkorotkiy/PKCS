@@ -10,6 +10,7 @@ private:
 	CK_FUNCTION_LIST_PTR FuncList = NULL_PTR;
 	CK_SLOT_ID_PTR SlotList = NULL_PTR;
 	CK_SLOT_INFO SlotInfo;
+	CK_TOKEN_INFO TokenInfo;
 	CK_ULONG ListCount;
 	void LoadProc(HINSTANCE, const char*);
 public:
@@ -18,6 +19,7 @@ public:
 	int m_C_Initialize();
 	int m_C_GetSlotList(CK_BBOOL);
 	int m_C_GetSlotInfo(unsigned int);
+	int m_C_GetTokenInfo(unsigned int);
 	//~CryptoToken();
 };
 
@@ -49,13 +51,14 @@ int CryptoToken::m_C_GetSlotList(CK_BBOOL token_present) {
 
 int CryptoToken::m_C_GetSlotInfo(unsigned int slot = 1) {
 	CK_C_GetSlotInfo pC_GetSlotInfo = FuncList->C_GetSlotInfo;
-	return pC_GetSlotInfo(SlotList[slot-1], &SlotInfo);
+	return pC_GetSlotInfo(SlotList[slot - 1], &SlotInfo);
+}
+
+int CryptoToken::m_C_GetTokenInfo(unsigned int slot = 1) {
+	CK_C_GetTokenInfo pC_GetTokenInfo = FuncList->C_GetTokenInfo;
+	return pC_GetTokenInfo(SlotList[slot - 1], &TokenInfo);
 }
 
 int main() {
 	CryptoToken a(L"C:\\SoftHSM2\\lib\\softhsm2-x64.dll");
-	a.m_C_GetFunctionList();
-	a.m_C_Initialize();
-	a.m_C_GetSlotList(CK_FALSE);
-	a.m_C_GetSlotInfo();
 }
