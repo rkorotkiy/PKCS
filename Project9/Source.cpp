@@ -6,18 +6,19 @@
 class CryptoToken {
 private:
 	HINSTANCE hLib;
-	void* LoadFunc = nullptr;
-	CK_FUNCTION_LIST_PTR FuncList = nullptr;
-	CK_SLOT_ID_PTR SlotList = nullptr;
-	CK_ULONG ListCount;
+	void* LoadFunc = NULL_PTR;
+	CK_FUNCTION_LIST_PTR FuncList = NULL_PTR;
+	CK_SLOT_ID_PTR SlotList = NULL_PTR;
+	CK_SLOT_INFO SlotInfo;
+	CK_ULONG ListCount = NULL_PTR;
 	void LoadProc(HINSTANCE, const char*);
 public:
 	CryptoToken(const wchar_t*);
 	int m_C_GetFunctionList();
 	int m_C_Initialize();
 	int m_C_GetSlotList(CK_BBOOL);
+	int m_C_GetSlotInfo(unsigned int);
 	//~CryptoToken();
-	
 };
 
 CryptoToken::CryptoToken(const wchar_t* PATH_TO_DLL) {
@@ -43,13 +44,20 @@ int CryptoToken::m_C_Initialize() {
 
 int CryptoToken::m_C_GetSlotList(CK_BBOOL token_present) {
 	CK_C_GetSlotList pC_GetSlotList = FuncList->C_GetSlotList;
-	return pC_GetSlotList(token_present, NULL_PTR, &ListCount);
+	return pC_GetSlotList(token_present, SlotList, &ListCount);
+}
+
+int CryptoToken::m_C_GetSlotInfo(unsigned int slot = 1) {
+	CK_C_GetSlotInfo pC_GetSlotInfo = FuncList->C_GetSlotInfo;
+	return pC_GetSlotInfo(*SlotList, &SlotInfo);
 }
 
 int main() {
 	CryptoToken a(L"C:\\SoftHSM2\\lib\\softhsm2-x64.dll");
 	a.m_C_GetFunctionList();
 	a.m_C_Initialize();
-	CK_RV rv = a.m_C_GetSlotList(CK_FALSE);
-	if (rv == CKR_OK) std::cout << "1";
+	a.m_C_GetSlotList(CK_FALSE);
+	if (a.m_C_GetSlotInfo() == CKR_OK) {
+		std::cout << "1";
+	}
 }
