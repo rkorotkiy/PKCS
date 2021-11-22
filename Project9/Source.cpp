@@ -40,6 +40,7 @@ int CryptoToken::m_C_GetFunctionList() {
 	typedef int (*C_GetFunctionList_decl)(CK_FUNCTION_LIST_PTR_PTR);
 	int (*C_GetFuncList)(CK_FUNCTION_LIST_PTR_PTR);
 	C_GetFuncList = (C_GetFunctionList_decl)LoadFunc;
+	rv = C_GetFuncList(&FuncList);
 	return C_GetFuncList(&FuncList);
 }
 
@@ -56,10 +57,11 @@ int CryptoToken::m_C_Initialize(CK_C_INITIALIZE_ARGS InitArgs) {
 int CryptoToken::m_C_GetSlotList(CK_BBOOL token_present) {
 	CK_C_GetSlotList pC_GetSlotList = FuncList->C_GetSlotList;
 	rv = pC_GetSlotList(token_present, NULL_PTR, &ListCount);
-	if (rv = CKR_OK) {
+	if (rv == CKR_OK) {
 		SlotList = (CK_SLOT_ID_PTR)malloc(ListCount * sizeof(CK_SLOT_ID));
 		return pC_GetSlotList(token_present, SlotList, &ListCount);
 	}
+	return rv;
 }
 
 int CryptoToken::m_C_GetSlotInfo(unsigned int slot = 1) {
