@@ -41,7 +41,7 @@ int CryptoToken::m_C_GetFunctionList() {
 	int (*C_GetFuncList)(CK_FUNCTION_LIST_PTR_PTR);
 	C_GetFuncList = (C_GetFunctionList_decl)LoadFunc;
 	rv = C_GetFuncList(&FuncList);
-	return C_GetFuncList(&FuncList);
+	return rv;
 }
 
 int CryptoToken::m_C_Initialize() {
@@ -88,5 +88,5 @@ CryptoToken::~CryptoToken() {
 int main() {
 	CryptoToken a(L"C:\\SoftHSM2\\lib\\softhsm2-x64.dll");
 	a.m_C_GetFunctionList();
-	CK_RV rv = a.m_C_Initialize();
+	a.m_C_Initialize();
 }
