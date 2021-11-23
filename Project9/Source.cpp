@@ -17,6 +17,7 @@ private:
 	CK_ULONG ListCount;
 	CK_FLAGS flags = 0;
 	CK_VOID_PTR pReserved;
+	CK_MECHANISM_TYPE_PTR MechanismList;
 	void LoadProc(HINSTANCE, const char*);
 public:
 	CryptoToken(const wchar_t*);
@@ -27,6 +28,7 @@ public:
 	int GetSlotInfo(unsigned int);
 	int GetTokenInfo(unsigned int);
 	int WaitForSlotEvent();
+	int GetMechanismList();
 	int Finalize();
 	~CryptoToken();
 };
@@ -160,11 +162,33 @@ int CryptoToken::WaitForSlotEvent() {
 	}
 }
 
-/*Доделать C_GetMechanismList, C_GetMechanismInfo*/
+int CryptoToken::GetMechanismList() {
+	CK_C_GetMechanismList pC_GetMechanismList = FuncList->C_GetMechanismList;
+	try {
+		CK_RV rv = pC_GetMechanismList(*SlotList, NULL_PTR, &ListCount);
+		if (rv != CKR_OK) throw rv;
+	}
+	catch (int RV) {
+		std::cout << "Return value is not CKR_OK (Code " << RV << " )";
+	}
+	try {
+		if (ListCount > 0) MechanismList = new CK_MECHANISM_TYPE;
+		CK_RV rv = pC_GetMechanismList(*SlotList, MechanismList, &ListCount);
+		if (rv != CKR_OK) throw rv;
+	}
+	catch(int RV) {
+		std::cout << "Return value is not CKR_OK (Code " << RV << " )";
+	}
+}
+
+/*Доделать C_GetMechanismInfo*/
 
 CryptoToken::~CryptoToken() {
 	if (SlotList != NULL_PTR) {
 		delete SlotList;
+	}
+	if (MechanismList != NULL_PTR) {
+		delete MechanismList;
 	}
 	FreeLibrary(hLib);
 }
