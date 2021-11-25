@@ -94,6 +94,7 @@ int CryptoToken::GetSlotInfo(unsigned int slot) {
 int CryptoToken::GetTokenInfo(unsigned int slot) {
 	if (FuncList == NULL) throw FuncListErr();
 	CK_C_GetTokenInfo pC_GetTokenInfo = FuncList->C_GetTokenInfo;
+	if (slot == 0) throw PKCSExceptions();
 	CK_RV rv = pC_GetTokenInfo(SlotList[slot - 1], &TokenInfo);
 	if (rv != CKR_OK)throw RetVal(rv);
 	return rv;
@@ -171,4 +172,5 @@ int main() {
 		std::cout << ex.what();
 		exit(1);
 	}
+
 }
