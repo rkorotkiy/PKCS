@@ -85,6 +85,7 @@ int CryptoToken::GetSlotList(CK_BBOOL token_present) {
 
 int CryptoToken::GetSlotInfo(unsigned int slot) {
 	if (FuncList == NULL) throw FuncListErr();
+	if (slot == 0) throw PKCSExceptions();
 	CK_C_GetSlotInfo pC_GetSlotInfo = FuncList->C_GetSlotInfo;
 	CK_RV rv = pC_GetSlotInfo(SlotList[slot - 1], &SlotInfo);
 	if (rv != CKR_OK) throw RetVal(rv);
@@ -93,8 +94,8 @@ int CryptoToken::GetSlotInfo(unsigned int slot) {
 
 int CryptoToken::GetTokenInfo(unsigned int slot) {
 	if (FuncList == NULL) throw FuncListErr();
-	CK_C_GetTokenInfo pC_GetTokenInfo = FuncList->C_GetTokenInfo;
 	if (slot == 0) throw PKCSExceptions();
+	CK_C_GetTokenInfo pC_GetTokenInfo = FuncList->C_GetTokenInfo;
 	CK_RV rv = pC_GetTokenInfo(SlotList[slot - 1], &TokenInfo);
 	if (rv != CKR_OK)throw RetVal(rv);
 	return rv;
@@ -129,6 +130,7 @@ int CryptoToken::GetMechanismList() {
 
 int CryptoToken::GetMechanismInfo(unsigned int slot) {
 	if (FuncList == NULL) throw FuncListErr();
+	if (slot == 0) throw PKCSExceptions();
 	CK_C_GetMechanismInfo pC_GetMechanismInfo = FuncList->C_GetMechanismInfo;
 	CK_RV rv = pC_GetMechanismInfo(*SlotList, MechanismList[slot], &MechanismInfo);
 	if (rv != CKR_OK) throw RetVal(rv);
