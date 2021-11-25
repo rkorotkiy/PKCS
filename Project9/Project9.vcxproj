@@ -139,9 +139,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="PKCSExceptions.cpp" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="PKCSExceptions.h" />
     <ClInclude Include="tdef.h" />
     <ClInclude Include="pkcs11.h" />
   </ItemGroup>
