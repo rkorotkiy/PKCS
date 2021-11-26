@@ -140,9 +140,11 @@ int CryptoToken::GetMechanismInfo(unsigned int slot) {
 CryptoToken::~CryptoToken() {
 	if (SlotList != NULL_PTR) {
 		delete SlotList;
+		SlotList = NULL_PTR;
 	}
 	if (MechanismList != NULL_PTR) {
 		delete MechanismList;
+		MechanismList = NULL_PTR;
 	}
 	if (hLib != NULL) {
 		FreeLibrary(hLib);
