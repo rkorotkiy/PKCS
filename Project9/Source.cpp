@@ -9,7 +9,7 @@
 
 class CryptoToken {
 private:
-	HINSTANCE hLib;
+	HINSTANCE hLib = NULL;
 	void* LoadFunc = NULL_PTR;
 	CK_C_INITIALIZE_ARGS InitArgs;
 	CK_FUNCTION_LIST_PTR FuncList = NULL_PTR;
@@ -144,7 +144,9 @@ CryptoToken::~CryptoToken() {
 	if (MechanismList != NULL_PTR) {
 		delete MechanismList;
 	}
-	FreeLibrary(hLib);
+	if (hLib != NULL) {
+		FreeLibrary(hLib);
+	}
 }
 
 int main() {
