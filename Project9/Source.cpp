@@ -157,15 +157,15 @@ int main() {
 	try {
 		a.GetFunctionList();
 	}
-	catch (LibLoadErr ex) {
+	catch (LibLoadErr& const ex) {
 		std::cout << ex.what();
 		exit(1);
 	}
-	catch (FuncLoadErr ex) {
+	catch (FuncLoadErr& const ex) {
 		std::cout << ex.what();
 		exit(1);
 	}
-	catch (RetVal ex) {
+	catch (RetVal& const ex) {
 		std::cout << ex.what();
 		exit(1);
 	}
@@ -174,7 +174,7 @@ int main() {
 	try {
 		a.GetSlotInfo(100);
 	}
-	catch (RetVal ex) {
+	catch (RetVal& const ex) {
 		std::cout << ex.what();
 		exit(1);
 	}
